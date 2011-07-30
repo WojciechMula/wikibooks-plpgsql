@@ -7,9 +7,10 @@ CREATE OR REPLACE FUNCTION zakresy() RETURNS void AS $$
     
         <<blok_zagniezdzony>>
         DECLARE
-            tekst   text := 'zagnieżdżony';
+            tekst   text := 'zagnieżdżony'; -- przesłanienie
+            liczba2 integer := liczba;      -- inicjalizacja zmienną
         BEGIN
-            RAISE NOTICE 'tekst=%, liczba=%', tekst, liczba;
+            RAISE NOTICE 'tekst=%, liczba=%, liczba2=%', tekst, liczba, liczba2;
         END;
 
         RAISE NOTICE 'tekst=%, liczba=%', tekst, liczba;
