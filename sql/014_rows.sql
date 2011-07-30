@@ -1,0 +1,24 @@
+BEGIN;
+
+CREATE TABLE test (x integer);
+INSERT INTO test (SELECT i FROM generate_series(1, 10000) AS i);
+
+CREATE OR REPLACE FUNCTION indeksy1() RETURNS SETOF integer AS $$
+	BEGIN
+		RETURN NEXT (SELECT 123);
+	END;
+$$ LANGUAGE 'plpgsql'
+   ROWS 1;
+
+CREATE OR REPLACE FUNCTION indeksy2() RETURNS SETOF integer AS $$
+	BEGIN
+		RETURN NEXT (SELECT 123);
+	END;
+$$ LANGUAGE 'plpgsql'
+   ROWS 1000000;
+
+EXPLAIN SELECT sum(x) FROM test WHERE x IN (SELECT i FROM indeksy1() AS i);
+
+EXPLAIN SELECT sum(x) FROM test WHERE x IN (SELECT i FROM indeksy2() AS i);
+
+ROLLBACK;
