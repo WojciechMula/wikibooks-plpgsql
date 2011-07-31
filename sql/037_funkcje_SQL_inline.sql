@@ -1,0 +1,28 @@
+BEGIN;
+
+CREATE OR REPLACE FUNCTION pred1() RETURNS integer
+	LANGUAGE 'plpgsql'
+AS $$
+	BEGIN
+		RETURN 123;
+	END;
+$$ STABLE;
+
+CREATE OR REPLACE FUNCTION pred2() RETURNS integer
+	LANGUAGE 'SQL'
+AS $$
+	SELECT 123;
+$$ STABLE;
+
+CREATE TABLE test (x integer);
+INSERT INTO test (SELECT * FROM generate_series(1, 100000));
+
+-- 1.
+EXPLAIN ANALYZE
+	SELECT * FROM test WHERE x = pred1();
+
+-- 2.
+EXPLAIN ANALYZE
+	SELECT * FROM test WHERE x = pred2();
+
+ROLLBACK;
